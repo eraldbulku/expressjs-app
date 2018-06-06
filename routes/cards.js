@@ -3,15 +3,6 @@ const router = express.Router();
 const { data } = require('../data/flashcardData.json');
 const { cards } = data;
 
-const colors = [
-  'red',
-  'orange',
-  'yellow',
-  'green',
-  'blue',
-  'purple'
-];
-
 router.get('/', (req, res) => {
 	const numberOfCards = cards.length;
 	const flashCardId = Math.floor( Math.random() * numberOfCards);
@@ -23,7 +14,7 @@ router.get('/:id', (req, res) => {
 	const { id } = req.params;
 
 	if(!side) {
-		res.redirect(`/cards/${id}?side=question`);
+		return res.redirect(`/cards/${id}?side=question`);
 	}
 
 	const name = req.cookies.username;
