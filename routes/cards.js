@@ -12,12 +12,36 @@ const colors = [
   'purple'
 ];
 
+router.get('/', (req, res) => {
+	const numberOfCards = cards.length;
+	const flashCardId = Math.floor( Math.random() * numberOfCards);
+	res.redirect(`/cards/${flashCardId}`);
+});
+
 router.get('/:id', (req, res) => {
-	res.render('card', {
-		prompt: cards[req.params.id].question, 
-		hint: cards[req.params.id].hint,
-		colors
-	});
+	const { side } = req.query;
+	const { id } = req.params;
+
+	if(!side) {
+		res.redirect(`/cards/${id}?side=question`);
+	}
+
+	const name = req.cookies.username;
+	const text = cards[id][side];
+	const { hint } = cards[id];
+
+	const templateData = { id, text, name };
+
+	if(side === 'question') {
+		templateData.hint = hint;
+		templateData.sideToShow = 'answer';
+		templateData.sideToShowDisplay = 'Answer';
+	} else {
+		templateData.sideToShow = 'question';
+		templateData.sideToShowDisplay = 'Question';
+	}
+
+	res.render('card', templateData);
 });
 
 module.exports = router;
